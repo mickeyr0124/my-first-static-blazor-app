@@ -1,9 +1,23 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@inject NavigationManager NavManager
 
-<h1>Hello, world from Mickey!</h1>
+<PageTitle>Select...</PageTitle>
 
-Welcome to your new app.
+<button class="btn btn-primary" @onclick="navToDaysUntil">Days Until</button>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<button class="btn btn-primary" @onclick="navToCurrency">Currencies</button>
+
+
+@code{
+    
+    private void navToDaysUntil()
+    {
+        NavManager.NavigateTo("/daysuntil");
+    }
+
+    private void navToCurrency()
+    {
+        NavManager.NavigateTo("/currency");
+    }
+}
