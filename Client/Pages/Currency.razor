@@ -1,7 +1,22 @@
 ﻿@page "/currency"
 
-<h3>Currency Conversion</h3>
+
+@inject NavigationManager NavManager
+
+
+<h1>Currency Conversion</h1>
+
+
+<br />
+<br />
+
+    <button class="btn btn-primary btn-lg" @onclick="navToDaysUntil">Days Until</button>
+<br />
+<br />
 
 @code {
-
+    private void navToDaysUntil()
+    {
+        NavManager.NavigateTo("/daysuntil");
+    }
 }

@@ -4,15 +4,20 @@
 
 <h1>Days Until</h1>
 
-<p role="status">Current count: @currentCount</p>
+@inject NavigationManager NavManager
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+
+<br />
+<br />
+
+<button class="btn btn-primary btn-lg" @onclick="navToCurrency">Currency Conversion</button>
+<br />
+<br />
 
 @code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    private void navToCurrency()
     {
-        currentCount+=10;
+        NavManager.NavigateTo("/currency");
     }
 }
