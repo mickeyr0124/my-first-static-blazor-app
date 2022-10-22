@@ -1,11 +1,72 @@
 ﻿@page "/currency"
+@using WebAssemblyHTTP.Models
 
-
+@inject IHttpClientFactory _clientFactory
 @inject NavigationManager NavManager
 
 
 <h1>Currency Conversion</h1>
 
+
+<h3>Currency Conversion</h3>
+
+@if (string.IsNullOrWhiteSpace(errorString) == false)
+{
+    <div class="h2">@errorString</div>
+}
+else if (currency is null)
+{
+    <div class="h4">Loading...</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Currency</th>
+                <th>Per USD</th>
+                <th>USD Per</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>EUR</td>
+                <td>@EUR</td>
+                <td>@invEUR</td>
+            </tr>
+            <tr>
+                <td>GPB</td>
+                <td>@GPB</td>
+                <td>@invGPB</td>
+            </tr>
+           <tr>
+                <td>CAD</td>
+                <td>@CAD</td>
+                <td>@invCAD</td>
+            </tr
+            <tr>
+                <td>JPY</td>
+                <td>@JPY</td>
+                <td>@invJPY</td>
+            </tr>
+            <tr>
+                <td>AUD</td>
+                <td>@AUD</td>
+                <td>@invAUD</td>
+            </tr>
+            <tr>
+                <td>NZD</td>
+                <td>@NZD</td>
+                <td>@invNZD</td>
+            </tr>
+            <tr>
+                <td>ZAR</td>
+                <td>@ZAR</td>
+                <td>@invZAR</td>
+            </tr>
+        </tbody>
+    </table>
+}
 
 <br />
 <br />
@@ -19,4 +80,93 @@
     {
         NavManager.NavigateTo("/daysuntil");
     }
+
+        CurrencyModel currency;
+
+        string errorString;
+
+        string EUR;
+        string invEUR;
+
+        string GPB;
+        string invGPB;
+
+        string CAD;
+        string invCAD;
+
+        string JPY;
+        string invJPY;
+
+        string AUD;
+        string invAUD;
+
+        string NZD;
+        string invNZD;
+
+        string ZAR;
+        string invZAR;
+
+        private string calcInv(double num)
+        {
+            if(num>0)
+            {
+                return string.Format("{0:N2}", 1 / num);
+            }
+            else
+            {
+                return "0.00";
+            }
+        }
+
+    private string calcValue(double num)
+    {
+        return string.Format("{0:N2}", num);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        //var request = new HttpRequestMessage(HttpMethod.Get,
+        //    "https://v6.exchangerate-api.com/v6/341144a9ddfdfe556c521658/latest/USD");
+
+        //var client = _clientFactory.CreateClient();
+
+        //HttpResponseMessage response = await client.SendAsync(request);
+
+        //if(response.IsSuccessStatusCode)
+        //{
+        //    forecast = await response.Content.ReadFromJsonAsync<WeatherForecastModel>();
+        //    errorString = null;
+        //}
+        //else
+        //{
+        //    errorString = $"There was an error getting our forecast: { response.ReasonPhrase }";
+        //}
+
+        var client = _clientFactory.CreateClient();
+        try
+        {
+            currency = await client.GetFromJsonAsync<CurrencyModel>("https://v6.exchangerate-api.com/v6/341144a9ddfdfe556c521658/latest/USD");
+            errorString = null;
+
+            EUR = calcValue(currency.conversion_rates.EUR);
+            invEUR = calcInv(currency.conversion_rates.EUR);
+            GPB = calcValue(currency.conversion_rates.GBP);
+            invGPB = calcInv(currency.conversion_rates.GBP);
+            JPY = calcValue(currency.conversion_rates.JPY);
+            CAD = calcValue(currency.conversion_rates.CAD);
+            invCAD = calcInv(currency.conversion_rates.CAD);
+            invJPY = calcInv(currency.conversion_rates.JPY);
+            AUD = calcValue(currency.conversion_rates.AUD);
+            invAUD = calcInv(currency.conversion_rates.AUD);
+            NZD = calcValue(currency.conversion_rates.NZD);
+            invNZD = calcInv(currency.conversion_rates.NZD);
+            ZAR = calcValue(currency.conversion_rates.ZAR);
+            invZAR = calcInv(currency.conversion_rates.ZAR);
+
+        }
+        catch (Exception ex)
+        {
+            errorString = $"There was an error getting our conversion rates: {ex.Message}";
+        }
+    }
+
 }
